@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>André Renato - Consultoria Geotécnica</title>
+    <title>André Renato - Engenheiro Geotécnico</title>
     <style>
         * {
             margin: 0;
@@ -11,11 +11,51 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            overflow-x: hidden;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
             background-color: #f8f9fa;
+            overflow-x: hidden;
+        }
+
+        /* LANGUAGE SWITCHER */
+        .language-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .lang-btn {
+            padding: 8px 12px;
+            border: 2px solid #6b8fa3;
+            background: white;
+            color: #6b8fa3;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: #6b8fa3;
+            color: white;
+        }
+
+        .lang-btn:hover {
+            background: #6b8fa3;
+            color: white;
         }
 
         /* HEADER */
@@ -73,6 +113,15 @@
             }
             .header p {
                 font-size: 1rem;
+            }
+            .language-switcher {
+                top: 10px;
+                right: 10px;
+                gap: 5px;
+            }
+            .lang-btn {
+                padding: 6px 10px;
+                font-size: 0.85rem;
             }
         }
 
@@ -323,31 +372,31 @@
 </head>
 <body>
 
+    <!-- LANGUAGE SWITCHER -->
+    <div class="language-switcher">
+        <button class="lang-btn active" data-lang="pt">Português</button>
+        <button class="lang-btn" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="es">Español</button>
+    </div>
+
     <!-- HEADER -->
     <header class="header">
         <div class="header-content">
-            <h1>ANDRÉ RENATO<br>ROCHA ALVES</h1>
-            <p>ENGENHEIRO CIVIL | ESPECIALISTA EM GEOTECNIA</p>
+            <h1 data-i18n="header.name">ANDRÉ RENATO ROCHA ALVES</h1>
+            <p data-i18n="header.title">ENGENHEIRO CIVIL COM FOCO EM GEOTECNIA</p>
         </div>
     </header>
 
     <!-- SOBRE MIM -->
     <section class="section container">
         <div class="about-image">
-            <svg width="300" height="350" viewBox="0 0 300 350" style="background: linear-gradient(to bottom, #f0f0f0, #e0e0e0); border-radius: 8px; margin: 0 auto; display: block;">
-                <circle cx="150" cy="80" r="45" fill="#d4a574"/>
-                <ellipse cx="150" cy="80" rx="40" ry="42" fill="#c9956f"/>
-                <path d="M 110 125 Q 110 115 150 115 Q 190 115 190 125 L 190 200 Q 150 210 110 200 Z" fill="#4a5568"/>
-                <rect x="110" y="200" width="80" height="90" fill="#2d3748"/>
-                <circle cx="130" cy="240" r="12" fill="#666"/>
-                <circle cx="170" cy="240" r="12" fill="#666"/>
-            </svg>
+            <img src="C:\Users\andre.alves\OneDrive - André Renato Engenheiro Civil\Andre Renato Engenheiro Civil\Prestacao de servicos geotecnia\foto\foto.jpg" alt="André Renato" style="width: 100%; max-width: 300px; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin: 0 auto; display: block;">
         </div>
         <div class="about-text">
-            <h2>Sobre Mim</h2>
-            <p><strong>Engenheiro Civil</strong> formado há 6 anos com especialização em <strong>Geotecnia de Mineração</strong>. Possuo 4 anos de experiência prática em análises geotécnicas numéricas (equilíbrio limite e elementos finitos) em projetos de infraestrutura e mineração.</p>
-            <p>Atualmente curso <strong>Mestrado em Geotecnia</strong> com foco em <strong>Confiabilidade Aplicada à Segurança de Barragens</strong>, combinando prática profissional com pesquisa acadêmica de ponta.</p>
-            <p>Meu diferencial está em entregar soluções técnicas de alta qualidade com abordagem eficiente, utilizando metodologias modernas e conhecimento atualizado em geotecnia.</p>
+            <h2 data-i18n="about.title">Sobre Mim</h2>
+            <p><strong data-i18n="about.p1.bold">Engenheiro Civil,</strong> <span data-i18n="about.p1">formado há 6 anos na UNESP campus Ilha Solteira/SP e atuante em Geotecnia de Mineração desde 2022, com experiência em projetos de descaracterização de barragem de rejeitos e construção de pilhas de estéril.</span></p>
+            <p><span data-i18n="about.p2.start">Atualmente, cursa</span> <strong data-i18n="about.p2.bold">Mestrado em Geotecnia na UNESP campus Bauru/SP</strong> <span data-i18n="about.p2.end">com foco na teoria da confiabilidade aplicada à segurança de barragens com relação à liquefação estática.</span></p>
+            <p data-i18n="about.p3">O seu diferencial está em entregar soluções técnicas de alta qualidade, atendendo às boas práticas geotécnias e aos métodos consagrados de literatura.</p>
         </div>
     </section>
 
@@ -355,60 +404,60 @@
 
     <!-- SERVIÇOS -->
     <section class="section servicos container">
-        <h2>Serviços</h2>
+        <h2 data-i18n="services.title">Serviços</h2>
         <div class="services-grid">
             <div class="service-item">
-                <div class="service-icon">🧪</div>
-                <h3>Ensaios de Laboratório</h3>
+                <div class="service-icon">⚗️</div>
+                <h3 data-i18n="services.lab.title">Ensaios de Laboratório</h3>
                 <ul>
-                    <li>Caracterização (granulometria, Atterberg)</li>
-                    <li>Adensamento e triaxiais</li>
-                    <li>Ensaios especializados (colapsibilidade, liquefação)</li>
+                    <li data-i18n="services.lab.i1">Caracterização (granulometria, Atterberg)</li>
+                    <li data-i18n="services.lab.i2">Adensamento e triaxiais</li>
+                    <li data-i18n="services.lab.i3">Ensaios especializados (colapsibilidade, liquefação)</li>
                 </ul>
             </div>
             <div class="service-item">
                 <div class="service-icon">⛏️</div>
-                <h3>Investigações de Campo</h3>
+                <h3 data-i18n="services.field.title">Investigações de Campo</h3>
                 <ul>
-                    <li>SPT e CPTu</li>
-                    <li>Piezômetros e inclinômetros</li>
-                    <li>Ensaios de infiltração</li>
+                    <li data-i18n="services.field.i1">SPT e CPTu</li>
+                    <li data-i18n="services.field.i2">Piezômetros e inclinômetros</li>
+                    <li data-i18n="services.field.i3">Ensaios de infiltração</li>
                 </ul>
             </div>
             <div class="service-item">
                 <div class="service-icon">📊</div>
-                <h3>Interpretação de Dados</h3>
+                <h3 data-i18n="services.interpretation.title">Interpretação de Dados</h3>
                 <ul>
-                    <li>Análise de ensaios laboratoriais</li>
-                    <li>Interpretação de investigações</li>
-                    <li>Relatórios técnicos integrados</li>
-                </ul>
-            </div>
-            <div class="service-item">
-                <div class="service-icon">⚙️</div>
-                <h3>Parametrização Geotécnica</h3>
-                <ul>
-                    <li>Modelos Mohr-Coulomb, Hardening Soil</li>
-                    <li>Parâmetros para análise de estabilidade</li>
-                    <li>Modelos hidráulicos (van Genuchten, Fredlund)</li>
-                </ul>
-            </div>
-            <div class="service-item">
-                <div class="service-icon">💾</div>
-                <h3>Consolidação de Dados</h3>
-                <ul>
-                    <li>Dashboards interativos</li>
-                    <li>Planilhas de caracterização</li>
-                    <li>Visualização georreferenciada</li>
+                    <li data-i18n="services.interpretation.i1">Análise de ensaios laboratoriais</li>
+                    <li data-i18n="services.interpretation.i2">Interpretação de investigações</li>
+                    <li data-i18n="services.interpretation.i3">Relatórios técnicos integrados</li>
                 </ul>
             </div>
             <div class="service-item">
                 <div class="service-icon">📈</div>
-                <h3>Análises Numéricas</h3>
+                <h3 data-i18n="services.parametrization.title">Parametrização Geotécnica</h3>
                 <ul>
-                    <li>Equilíbrio limite e pseudo-estático</li>
-                    <li>Análises tensão-deformação</li>
-                    <li>Modelos em elementos finitos</li>
+                    <li data-i18n="services.parametrization.i1">Modelos Mohr-Coulomb, Hardening Soil</li>
+                    <li data-i18n="services.parametrization.i2">Parâmetros para análise de estabilidade</li>
+                    <li data-i18n="services.parametrization.i3">Modelos hidráulicos (van Genuchten, Fredlund)</li>
+                </ul>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">💾</div>
+                <h3 data-i18n="services.consolidation.title">Consolidação de Dados</h3>
+                <ul>
+                    <li data-i18n="services.consolidation.i1">Dashboards interativos</li>
+                    <li data-i18n="services.consolidation.i2">Planilhas de caracterização</li>
+                    <li data-i18n="services.consolidation.i3">Visualização georreferenciada</li>
+                </ul>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">💻</div>
+                <h3 data-i18n="services.numerical.title">Análises Numéricas</h3>
+                <ul>
+                    <li data-i18n="services.numerical.i1">Equilíbrio limite e pseudo-estático</li>
+                    <li data-i18n="services.numerical.i2">Análises tensão-deformação</li>
+                    <li data-i18n="services.numerical.i3">Modelos em elementos finitos</li>
                 </ul>
             </div>
         </div>
@@ -419,29 +468,29 @@
     <!-- DIFERENCIAIS -->
     <section class="section diferenciais container">
         <div class="diferenciais-content">
-            <h2>Projetos e Diferenciais</h2>
-            <p style="color: #555; margin-bottom: 30px;">Experiência prática em projetos de mineração, barragens e infraestrutura, com foco em análises numéricas avançadas e soluções inovadoras.</p>
+            <h2 data-i18n="projects.title">Projetos e Diferenciais</h2>
+            <p style="color: #555; margin-bottom: 30px;" data-i18n="projects.subtitle">Experiência prática em projetos de mineração, barragens e infraestrutura, com foco em análises numéricas avançadas e soluções inovadoras.</p>
             
             <div class="diferenciais-grid">
                 <div class="diferencial-item">
                     <div class="diferencial-icon">⛰️</div>
-                    <h3>Mineração & Taludes</h3>
-                    <p>Análises de estabilidade de taludes, investigações geotécnicas em operações de mineração, design de fundações para estruturas de mineração.</p>
+                    <h3 data-i18n="projects.mining.title">Mineração & Taludes</h3>
+                    <p data-i18n="projects.mining.desc">Análises de estabilidade de taludes, investigações geotécnicas em operações de mineração, design de fundações para estruturas de mineração.</p>
                 </div>
                 <div class="diferencial-item">
                     <div class="diferencial-icon">🏗️</div>
-                    <h3>Barragens</h3>
-                    <p>Segurança de barragens, análises de confiabilidade, avaliação de riscos geotécnicos, modelagem hidráulica e percolação.</p>
+                    <h3 data-i18n="projects.dams.title">Barragens</h3>
+                    <p data-i18n="projects.dams.desc">Segurança de barragens, análises de confiabilidade, avaliação de riscos geotécnicos, modelagem hidráulica e percolação.</p>
                 </div>
                 <div class="diferencial-item">
                     <div class="diferencial-icon">🖥️</div>
-                    <h3>Modelagem Numérica</h3>
-                    <p>Equilíbrio limite, elementos finitos, modelos constitutivos avançados (HS, NorSand), análises de sensibilidade e confiabilidade.</p>
+                    <h3 data-i18n="projects.modeling.title">Modelagem Numérica</h3>
+                    <p data-i18n="projects.modeling.desc">Equilíbrio limite, elementos finitos, modelos constitutivos avançados (HS, NorSand), análises de sensibilidade e confiabilidade.</p>
                 </div>
                 <div class="diferencial-item">
                     <div class="diferencial-icon">📋</div>
-                    <h3>Relatórios Técnicos</h3>
-                    <p>Documentação completa e profissional, dashboards interativos com dados georreferenciados, entregáveis de alta qualidade.</p>
+                    <h3 data-i18n="projects.reports.title">Relatórios Técnicos</h3>
+                    <p data-i18n="projects.reports.desc">Documentação completa e profissional, dashboards interativos com dados georreferenciados, entregáveis de alta qualidade.</p>
                 </div>
             </div>
         </div>
@@ -451,29 +500,218 @@
 
     <!-- CONTATO -->
     <section class="section contato container">
-        <h2>Entre em Contato</h2>
-        <p style="font-size: 1.1rem; margin: 20px 0;">Pronto para discutir seu projeto geotécnico</p>
+        <h2 data-i18n="contact.title">Entre em Contato</h2>
         <div class="contact-info">
             <div class="contact-item">
                 <span class="contact-item-icon">✉️</span>
-                <a href="mailto:andre.geotecnia@email.com">andre.geotecnia@email.com</a>
+                <a href="mailto:andre.geotecnia@email.com">contato@andrerenato.com</a>
             </div>
             <div class="contact-item">
                 <span class="contact-item-icon">📱</span>
-                <a href="tel:+5514999999999">(14) 99999-9999</a>
+                <a href="tel:+5514999999999">+5518991476886</a>
             </div>
             <div class="contact-item">
                 <span class="contact-item-icon">💼</span>
-                <a href="https://linkedin.com/in/andrerenatorocha" target="_blank">LinkedIn</a>
+                <a href="https://www.linkedin.com/in/andr%C3%A9-renato-rocha-alves-03b647124/" target="_blank">LinkedIn</a>
             </div>
         </div>
     </section>
 
     <!-- FOOTER -->
     <footer>
-        <p>&copy; 2025 André Renato Rocha Alves - Consultoria Geotécnica</p>
-        <p>Especialista em análises geotécnicas numéricas | Segurança de barragens | Mineração</p>
+        <p data-i18n="footer.copyright">&copy; 2025 André Renato Rocha Alves - Engenheiro Geotécnico</p>
+        <p data-i18n="footer.description">CREA 2620311977</p>
     </footer>
+
+    <script>
+        const translations = {
+            pt: {
+                'header.name': 'ANDRÉ RENATO ROCHA ALVES',
+                'header.title': 'ENGENHEIRO GEOTÉCNICO | CREA 2620311977',
+                'about.title': 'Sobre Mim',
+                'about.p1.bold': 'Engenheiro Civil',
+                'about.p1': 'formado há 6 anos na UNESP campus Ilha Solteira/SP e atuante em Geotecnia de Mineração desde 2022, com experiência em projetos de descaracterização de barragem de rejeitos e construção de pilhas de estéril.',
+                'about.p2.start': 'Atualmente, cursa',
+                'about.p2.bold': 'Mestrado em Geotecnia na UNESP campus Bauru/SP',
+                'about.p2.end': 'com foco na teoria da confiabilidade aplicada à segurança de barragens com relação à liquefação estática.',
+                'about.p3': 'O seu diferencial está em entregar soluções técnicas de alta qualidade, atendendo às boas práticas geotécnias e aos métodos consagrados de literatura.',
+                'services.title': 'Serviços prestados',
+                'services.lab.title': 'Elaboração de especificação técnica para ensaios de laboratório',
+                'services.lab.i1': 'Caracterização completa',
+                'services.lab.i2': 'Adensamento, Triaxiais, Bender Elements',
+                'services.lab.i3': 'Ensaios para estado crítico e liquefação estática',
+                'services.field.title': 'Elaboração de especificação técnica para investigações de campo',
+                'services.field.i1': 'SPT, CPTu e dissipação, ensaio de infiltração',
+                'services.field.i2': 'Piezômetros e INA',
+                'services.field.i3': 'Marco superficial e inclinômetro',
+                'services.interpretation.title': 'Interpretação de ensaios de laboratório e campo',
+                'services.interpretation.i1': 'Compatibilização entre informação de laboratório e campo',
+                'services.interpretation.i2': 'Avaliação crítica da qualidade de dados do ensaio',
+                'services.interpretation.i3': 'Reportes técnicos integrados',
+                'services.parametrization.title': 'Parametrização Geotécnica',
+                'services.parametrization.i1': 'Parámetros de resistência para análises equilíbrio limite',
+                'services.parametrization.i2': 'Modelos constitutivos para análises de elementos finitos (Hardening Soil Small, NorSand)',
+                'services.parametrization.i3': 'Modelos hidráulicos para infiltração e percolação (van Genuchten, Fredlund e Xing)',
+                'services.consolidation.title': 'Consolididação de Dados',
+                'services.consolidation.i1': 'Entrega de paneles interactivos',
+                'services.consolidation.i2': 'Hojas de cálculo de caracterização',
+                'services.consolidation.i3': 'Visualização georreferenciada',
+                'services.numerical.title': 'Análises Numéricas 2D com SOFTWARE DO CLIENTE',
+                'services.numerical.i1': 'Equilíbrio limite estática e pseudo-estático',
+                'services.numerical.i2': 'Elementos finitos estático',
+                'services.numerical.i3': 'Sofwares utilizados: Seequent (Plaxis e GeoStudio) e Rocscience (RS2 e Slide 2)',
+                'projects.title': 'Projetos e Diferenciais',
+                'projects.subtitle': 'Experiência prática em projetos de Geotecnia de Mineração, com foco em parametrização e análises numéricas.',
+                'projects.mining.title': 'Taludes',
+                'projects.mining.desc': 'Análises de estabilidade de taludes, investigações geotécnicas em operações de mineração, design de fundações para estruturas de mineração.',
+                'projects.dams.title': 'Barragens de Rejeitos e Pilhas de Estéril',
+                'projects.dams.desc': 'Estabilidade dos diques e fundação, suscetibilidade à liquefação estática, modelagem hidráulica de infiltração e percolação.',
+                'projects.modeling.title': 'Modelagem Numérica',
+                'projects.modeling.desc': 'Equilíbrio limite, elementos finitos, modelos constitutivos avançados (HS, NorSand), análises de sensibilidade e confiabilidade.',
+                'projects.reports.title': 'Relatórios Técnicos',
+                'projects.reports.desc': 'Documentação completa e profissional, dashboards interativos com dados georreferenciados, entregáveis de alta qualidade.',
+                'contact.title': 'Entre em Contato',
+                'contact.subtitle': 'Pronto para discutir seu projeto geotécnico',
+                'footer.copyright': '&copy; 2025 André Renato Rocha Alves - Engenheiro Geotécnico',
+                'footer.description': 'CREA 2620311977'
+            },
+            en: {
+                'header.name': 'ANDRÉ RENATO ROCHA ALVES',
+                'header.title': 'GEOTECHNICAL ENGINEER | ENGINEERING LICENCE IN BRAZIL: CREA 2620311977',
+                'about.title': 'About Me',
+                'about.p1.bold': 'Civil Engineer',
+                'about.p1': 'graduated 6 years ago from UNESP Ilha Solteira campus and working in Mining Geotechnics since 2022, with experience in tailings dam decommissioning projects and waste rock pile construction.',
+                'about.p2.start': 'Currently, pursuing',
+                'about.p2.bold': 'Master\'s Degree in Geotechnics at UNESP Bauru campus',
+                'about.p2.end': 'focusing on reliability theory applied to dam safety in relation to static liquefaction.',
+                'about.p3': 'His distinguishing feature is delivering high-quality technical solutions, adhering to good geotechnical practices and established literature methods.',
+                'services.title': 'Services',
+                'services.lab.title': 'Development of Technical Specification for Laboratory Tests',
+                'services.lab.i1': 'Complete characterization',
+                'services.lab.i2': 'Consolidation, Triaxial, Bender Elements',
+                'services.lab.i3': 'Tests for critical state and static liquefaction',
+                'services.field.title': 'Development of Technical Specification for Field Investigations',
+                'services.field.i1': 'SPT, CPTu and dissipation, infiltration test',
+                'services.field.i2': 'Piezometers and INA',
+                'services.field.i3': 'Surface marker and inclinometer',
+                'services.interpretation.title': 'Interpretation of Laboratory and Field Tests',
+                'services.interpretation.i1': 'Compatibility between laboratory and field information',
+                'services.interpretation.i2': 'Critical judgment of test data quality',
+                'services.interpretation.i3': 'Integrated technical reports',
+                'services.parametrization.title': 'Geotechnical Parameterization',
+                'services.parametrization.i1': 'Strength parameters for limit equilibrium analyses',
+                'services.parametrization.i2': 'Constitutive models for finite element analyses (Hardening Soil Small, NorSand)',
+                'services.parametrization.i3': 'Hydraulic models for infiltration and percolation (van Genuchten, Fredlund and Xing)',
+                'services.consolidation.title': 'Data Consolidation',
+                'services.consolidation.i1': 'Delivery of interactive dashboards',
+                'services.consolidation.i2': 'Characterization spreadsheets',
+                'services.consolidation.i3': 'Georeferenced visualization',
+                'services.numerical.title': '2D Numerical Analyses with CLIENT SOFTWARE',
+                'services.numerical.i1': 'Limit equilibrium static and pseudo-static',
+                'services.numerical.i2': 'Finite elements static',
+                'services.numerical.i3': 'Software used: Seequent (Plaxis and GeoStudio) and Rocscience (RS2 and Slide 2)',
+                'projects.title': 'Projects and Differentials',
+                'projects.subtitle': 'Practical experience in Mining Geotechnics projects, focused on parameterization and numerical analyses.',
+                'projects.mining.title': 'Slopes',
+                'projects.mining.desc': 'Slope stability analyses, geotechnical investigations in mining operations, foundation design for mining structures.',
+                'projects.dams.title': 'Tailings Dams and Waste Rock Piles',
+                'projects.dams.desc': 'Stability of dikes and foundation, susceptibility to static liquefaction, hydraulic modeling of infiltration and percolation.',
+                'projects.modeling.title': 'Numerical Modeling',
+                'projects.modeling.desc': 'Limit equilibrium, finite elements, advanced constitutive models (HS, NorSand), sensitivity and reliability analyses.',
+                'projects.reports.title': 'Technical Reports',
+                'projects.reports.desc': 'Complete and professional documentation, interactive dashboards with georeferenced data, high-quality deliverables.',
+                'contact.title': 'Get In Touch',
+                'contact.subtitle': 'Ready to discuss your geotechnical project',
+                'footer.copyright': '&copy; 2025 André Renato Rocha Alves - Geotechnical Engineer',
+                'footer.description': 'CREA 2620311977'
+            },
+            es: {
+                'header.name': 'ANDRÉ RENATO ROCHA ALVES',
+                'header.title': 'INGENIERO GEOTÉCNICO | LICENCIA DE INGENIERÍA EN BRASIL: CREA 2620311977',
+                'about.title': 'Acerca de Mí',
+                'about.p1.bold': 'Ingeniero Civil',
+                'about.p1': 'graduado hace 6 años en la UNESP campus Ilha Solteira y trabajando en Geotecnia de Minería desde 2022, con experiencia en proyectos de desmantelamiento de presas de relaves e construcción de botaderos.',
+                'about.p2.start': 'Actualmente, cursa',
+                'about.p2.bold': 'Maestría en Geotecnia en la UNESP campus Bauru',
+                'about.p2.end': 'con especialización en teoría de confiabilidad aplicada a la seguridad de presas en relación con la licuefacción estática.',
+                'about.p3': 'Su característica distintiva es la entrega de soluciones técnicas de alta calidad, adhiriéndose a las mejores prácticas geotécnicas y a los métodos establecidos en la literatura.',
+                'services.title': 'Servicios',
+                'services.lab.title': 'Ensayos de Laboratorio',
+                'services.lab.i1': 'Caracterização (granulometría, Atterberg)',
+                'services.lab.i2': 'Consolidación y ensayos triaxiales',
+                'services.lab.i3': 'Ensaios especializados (colapsibilidade, licuación)',
+                'services.field.title': 'Investigaciones de Campo',
+                'services.field.i1': 'SPT y CPTu',
+                'services.field.i2': 'Piezómetros e inclinômetros',
+                'services.field.i3': 'Ensaios de infiltración',
+                'services.interpretation.title': 'Interpretación de Datos',
+                'services.interpretation.i1': 'Análisis de ensayos de laboratorio',
+                'services.interpretation.i2': 'Interpretación de investigaciones',
+                'services.interpretation.i3': 'Reportes técnicos integrados',
+                'services.parametrization.title': 'Parametrización Geotécnica',
+                'services.parametrization.i1': 'Modelos Mohr-Coulomb, Hardening Soil',
+                'services.parametrization.i2': 'Parámetros para análise de estabilidade',
+                'services.parametrization.i3': 'Modelos hidráulicos (van Genuchten, Fredlund)',
+                'services.consolidation.title': 'Consolidación de Datos',
+                'services.consolidation.i1': 'Paneles interactivos',
+                'services.consolidation.i2': 'Hojas de caracterização',
+                'services.consolidation.i3': 'Visualización georreferenciada',
+                'services.numerical.title': 'Análisis Numéricos',
+                'services.numerical.i1': 'Equilibrio límite y pseudo-estático',
+                'services.numerical.i2': 'Análisis esfuerzo-deformação',
+                'services.numerical.i3': 'Modelos de elementos finitos',
+                'projects.title': 'Proyectos y Diferenciales',
+                'projects.subtitle': 'Experiencia práctica en proyectos de minería, presas e infraestructura, enfocada en análisis numéricos avanzados y soluciones innovadoras.',
+                'projects.mining.title': 'Minería & Taludes',
+                'projects.mining.desc': 'Análisis de estabilidad de taludes, investigaciones geotécnicas en operaciones mineras, diseño de fundaciones para estructuras mineras.',
+                'projects.dams.title': 'Presas',
+                'projects.dams.desc': 'Segurança de presas, análisis de confiabilidad, evaluación de riesgos geotécnicos, modelado hidráulico y percolación.',
+                'projects.modeling.title': 'Modelado Numérico',
+                'projects.modeling.desc': 'Equilibrio límite, elementos finitos, modelos constitutivos avanzados (HS, NorSand), análisis de sensibilidad y confiabilidad.',
+                'projects.reports.title': 'Reportes Técnicos',
+                'projects.reports.desc': 'Documentación completa y profesional, paneles interactivos con datos georreferenciados, entregables de alta calidad.',
+                'contact.title': 'Ponte en Contacto',
+                'contact.subtitle': 'Listo para discutir tu proyecto geotécnico',
+                'footer.copyright': '&copy; 2025 André Renato Rocha Alves - Inginiero Geotécnico',
+                'footer.description': 'Licencia de Ingeniería en Brasil: CREA 2620311977'
+            }
+        };
+
+        let currentLang = 'pt';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            
+            // Update all elements with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                const translation = translations[lang][key];
+                if (translation) {
+                    element.innerHTML = translation;
+                }
+            });
+
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+
+            // Save preference
+            localStorage.setItem('preferredLanguage', lang);
+        }
+
+        // Language button listeners
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                setLanguage(this.getAttribute('data-lang'));
+            });
+        });
+
+        // Load saved language preference or default to Portuguese
+        const savedLang = localStorage.getItem('preferredLanguage') || 'pt';
+        setLanguage(savedLang);
+    </script>
 
 </body>
 </html>
