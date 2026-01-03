@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>André Renato - Consultoria Geotécnica</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #6b8fa3 0%, #5a7a8f 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 100%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><defs><linearGradient id="soil" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%25" style="stop-color:%23a89968;stop-opacity:1" /><stop offset="50%25" style="stop-color:%238b7355;stop-opacity:1" /><stop offset="100%25" style="stop-color:%236b5344;stop-opacity:1" /></linearGradient></defs><polygon points="0,250 300,200 600,280 900,220 1200,300 1200,400 0,400" fill="url(%23soil)"/><polygon points="0,280 400,240 800,300 1200,260 1200,400 0,400" fill="%237a6448" opacity="0.6"/></svg>');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            .header p {
+                font-size: 1rem;
+            }
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* SECTIONS */
+        .section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            margin: 60px 0;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .section.servicos {
+            grid-template-columns: 1fr;
+        }
+
+        .section.diferenciais {
+            grid-template-columns: 1fr;
+        }
+
+        .section.contato {
+            grid-template-columns: 1fr;
+            text-align: center;
+            background: linear-gradient(135deg, #6b8fa3 0%, #5a7a8f 100%);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        .section h2 {
+            color: #2c4a61;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section.contato h2 {
+            color: white;
+        }
+
+        /* SOBRE MIM */
+        .about-image {
+            position: relative;
+        }
+
+        .about-image img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin: 0 auto;
+            display: block;
+        }
+
+        .about-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .about-text p {
+            margin-bottom: 15px;
+        }
+
+        /* SERVIÇOS */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+        }
+
+        .service-item {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #6b8fa3;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .service-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(107, 143, 163, 0.15);
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .service-item h3 {
+            color: #2c4a61;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .service-item ul {
+            list-style: none;
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        .service-item li {
+            padding: 5px 0;
+        }
+
+        .service-item li::before {
+            content: '▪ ';
+            color: #6b8fa3;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        /* DIFERENCIAIS */
+        .diferenciais-content {
+            width: 100%;
+        }
+
+        .diferenciais-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .diferenciais-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .diferencial-item {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .diferencial-item:hover {
+            transform: translateY(-5px);
+            background: #e8f1f7;
+        }
+
+        .diferencial-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .diferencial-item h3 {
+            color: #2c4a61;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .diferencial-item p {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* CONTATO */
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            font-size: 1.1rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .contact-item-icon {
+            font-size: 1.8rem;
+        }
+
+        .contact-item a {
+            color: white;
+            text-decoration: none;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            transition: border-color 0.3s ease;
+        }
+
+        .contact-item a:hover {
+            border-bottom-color: white;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #2c4a61;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 60px;
+            font-size: 0.95rem;
+        }
+
+        footer a {
+            color: #a0c4e4;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* UTILITÁRIOS */
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #ddd, transparent);
+            margin: 40px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e8f1f7;
+            color: #2c4a61;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-content">
+            <h1>ANDRÉ RENATO<br>ROCHA ALVES</h1>
+            <p>ENGENHEIRO CIVIL | ESPECIALISTA EM GEOTECNIA</p>
+        </div>
+    </header>
+
+    <!-- SOBRE MIM -->
+    <section class="section container">
+        <div class="about-image">
+            <svg width="300" height="350" viewBox="0 0 300 350" style="background: linear-gradient(to bottom, #f0f0f0, #e0e0e0); border-radius: 8px; margin: 0 auto; display: block;">
+                <circle cx="150" cy="80" r="45" fill="#d4a574"/>
+                <ellipse cx="150" cy="80" rx="40" ry="42" fill="#c9956f"/>
+                <path d="M 110 125 Q 110 115 150 115 Q 190 115 190 125 L 190 200 Q 150 210 110 200 Z" fill="#4a5568"/>
+                <rect x="110" y="200" width="80" height="90" fill="#2d3748"/>
+                <circle cx="130" cy="240" r="12" fill="#666"/>
+                <circle cx="170" cy="240" r="12" fill="#666"/>
+            </svg>
+        </div>
+        <div class="about-text">
+            <h2>Sobre Mim</h2>
+            <p><strong>Engenheiro Civil</strong> formado há 6 anos com especialização em <strong>Geotecnia de Mineração</strong>. Possuo 4 anos de experiência prática em análises geotécnicas numéricas (equilíbrio limite e elementos finitos) em projetos de infraestrutura e mineração.</p>
+            <p>Atualmente curso <strong>Mestrado em Geotecnia</strong> com foco em <strong>Confiabilidade Aplicada à Segurança de Barragens</strong>, combinando prática profissional com pesquisa acadêmica de ponta.</p>
+            <p>Meu diferencial está em entregar soluções técnicas de alta qualidade com abordagem eficiente, utilizando metodologias modernas e conhecimento atualizado em geotecnia.</p>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- SERVIÇOS -->
+    <section class="section servicos container">
+        <h2>Serviços</h2>
+        <div class="services-grid">
+            <div class="service-item">
+                <div class="service-icon">🧪</div>
+                <h3>Ensaios de Laboratório</h3>
+                <ul>
+                    <li>Caracterização (granulometria, Atterberg)</li>
+                    <li>Adensamento e triaxiais</li>
+                    <li>Ensaios especializados (colapsibilidade, liquefação)</li>
+                </ul>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">⛏️</div>
+                <h3>Investigações de Campo</h3>
+                <ul>
+                    <li>SPT e CPTu</li>
+                    <li>Piezômetros e inclinômetros</li>
+                    <li>Ensaios de infiltração</li>
+                </ul>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">📊</div>
+                <h3>Interpretação de Dados</h3>
+                <ul>
+                    <li>Análise de ensaios laboratoriais</li>
+                    <li>Interpretação de investigações</li>
+                    <li>Relatórios técnicos integrados</li>
+                </ul>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">⚙️</div>
+                <h3>Parametrização Geotécnica</h3>
+                <ul>
+                    <li>Modelos Mohr-Coulomb, Hardening Soil</li>
+                    <li>Parâmetros para análise de estabilidade</li>
+                    <li>Modelos hidráulicos (van Genuchten, Fredlund)</li>
+                </ul>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">💾</div>
+                <h3>Consolidação de Dados</h3>
+                <ul>
+                    <li>Dashboards interativos</li>
+                    <li>Planilhas de caracterização</li>
+                    <li>Visualização georreferenciada</li>
+                </ul>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">📈</div>
+                <h3>Análises Numéricas</h3>
+                <ul>
+                    <li>Equilíbrio limite e pseudo-estático</li>
+                    <li>Análises tensão-deformação</li>
+                    <li>Modelos em elementos finitos</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- DIFERENCIAIS -->
+    <section class="section diferenciais container">
+        <div class="diferenciais-content">
+            <h2>Projetos e Diferenciais</h2>
+            <p style="color: #555; margin-bottom: 30px;">Experiência prática em projetos de mineração, barragens e infraestrutura, com foco em análises numéricas avançadas e soluções inovadoras.</p>
+            
+            <div class="diferenciais-grid">
+                <div class="diferencial-item">
+                    <div class="diferencial-icon">⛰️</div>
+                    <h3>Mineração & Taludes</h3>
+                    <p>Análises de estabilidade de taludes, investigações geotécnicas em operações de mineração, design de fundações para estruturas de mineração.</p>
+                </div>
+                <div class="diferencial-item">
+                    <div class="diferencial-icon">🏗️</div>
+                    <h3>Barragens</h3>
+                    <p>Segurança de barragens, análises de confiabilidade, avaliação de riscos geotécnicos, modelagem hidráulica e percolação.</p>
+                </div>
+                <div class="diferencial-item">
+                    <div class="diferencial-icon">🖥️</div>
+                    <h3>Modelagem Numérica</h3>
+                    <p>Equilíbrio limite, elementos finitos, modelos constitutivos avançados (HS, NorSand), análises de sensibilidade e confiabilidade.</p>
+                </div>
+                <div class="diferencial-item">
+                    <div class="diferencial-icon">📋</div>
+                    <h3>Relatórios Técnicos</h3>
+                    <p>Documentação completa e profissional, dashboards interativos com dados georreferenciados, entregáveis de alta qualidade.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- CONTATO -->
+    <section class="section contato container">
+        <h2>Entre em Contato</h2>
+        <p style="font-size: 1.1rem; margin: 20px 0;">Pronto para discutir seu projeto geotécnico</p>
+        <div class="contact-info">
+            <div class="contact-item">
+                <span class="contact-item-icon">✉️</span>
+                <a href="mailto:andre.geotecnia@email.com">andre.geotecnia@email.com</a>
+            </div>
+            <div class="contact-item">
+                <span class="contact-item-icon">📱</span>
+                <a href="tel:+5514999999999">(14) 99999-9999</a>
+            </div>
+            <div class="contact-item">
+                <span class="contact-item-icon">💼</span>
+                <a href="https://linkedin.com/in/andrerenatorocha" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2025 André Renato Rocha Alves - Consultoria Geotécnica</p>
+        <p>Especialista em análises geotécnicas numéricas | Segurança de barragens | Mineração</p>
+    </footer>
+
+</body>
+</html>
