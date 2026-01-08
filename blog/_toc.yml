@@ -1,0 +1,24 @@
+# Índice do Blog - Table of Contents
+
+format: jb-book
+
+root:  intro
+
+parts: 
+  - caption:  Ensaios de Laboratório
+    chapters: 
+      - file: Ensaios de laboratório
+        sections:
+          - file: Interpretação de ensaios triaxiais
+
+  - caption:  Aplicações em Excel, Power Query e Power BI
+    chapters:
+      - file: Aplicações em Excel, Power Query e Power BI
+        sections:
+          - file: Planilha de inventário
+
+  - caption: Liquefação
+    chapters: 
+      - file: Liquefação
+        sections:
+          - file: Introdução a liquefação estática
