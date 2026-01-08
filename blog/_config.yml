@@ -1,0 +1,40 @@
+# Configuração do Jupyter Book - Blog André Renato
+
+title: "Blog | André Renato"
+author: "André Renato Rocha Alves"
+logo: ""
+copyright: "2026"
+
+execute:
+  execute_notebooks: "off"  # Mude para "auto" se quiser executar os notebooks no build
+
+repository:
+  url: https://github.com/andrerenatorochaalves/andrerenato
+  path_to_book: blog
+  branch: main
+
+html: 
+  favicon: ""
+  use_issues_button: false
+  use_repository_button: true
+  use_download_button: true
+  navbar_number_sections: false
+  home_page_in_navbar: true
+  extra_footer: |
+    <p>
+      <a href="https://andrerenatorochaalves.github.io/andrerenato/">← Voltar ao site principal</a>
+    </p>
+  comments:
+    hypothesis: false
+
+sphinx:
+  config:
+    language: pt
+    html_theme_options:
+      navigation_with_keys: false
+
+parse:
+  myst_enable_extensions: 
+    - amsmath
+    - dollarmath
+    - colon_fence
