@@ -31,6 +31,7 @@ jobs:
         run: |
           pip install jupyter-book
           pip install deep-translator
+          pip install numpy matplotlib
 
       - name: Build Jupyter Book (PT)
         run: |
@@ -38,51 +39,76 @@ jobs:
           jupyter-book build . 
           cd .. 
 
+      - name: Debug - Show build output
+        run: |
+          echo "=== Conteúdo de blog/_build ==="
+          ls -la blog/_build/
+          echo ""
+          echo "=== Procurando index.html ==="
+          find blog/_build -name "index.html" -type f
+
       - name:  Prepare PT build
         run: |
           mkdir -p blog/_build/html_pt
           
+          # Copia de blog/_build/html se existir
           if [ -d "blog/_build/html" ] && [ "$(ls -A blog/_build/html 2>/dev/null)" ]; then
             cp -r blog/_build/html/* blog/_build/html_pt/
             echo "✓ Copiado de blog/_build/html"
-          elif [ -f "blog/_build/index.html" ]; then
-            cp -r blog/_build/* blog/_build/html_pt/ 2>/dev/null || true
-            rm -rf blog/_build/html_pt/html_pt 2>/dev/null || true
-            echo "✓ Copiado de blog/_build (root)"
+          # Senão, copia tudo de blog/_build (exceto pastas de saída)
           else
-            echo "⚠ Estrutura não reconhecida, copiando tudo"
-            cp -r blog/_build/* blog/_build/html_pt/ 2>/dev/null || true
-            rm -rf blog/_build/html_pt/html_pt 2>/dev/null || true
+            echo "html não encontrado, copiando de _build root..."
+            for item in blog/_build/*; do
+              basename=$(basename "$item")
+              if [ "$basename" != "html_pt" ] && [ "$basename" != "html_en" ] && [ "$basename" != ". doctrees" ]; then
+                cp -r "$item" blog/_build/html_pt/ 2>/dev/null || true
+              fi
+            done
+            echo "✓ Copiado de blog/_build (root)"
           fi
+          
+          echo ""
+          echo "=== Conteúdo de html_pt ==="
+          ls -la blog/_build/html_pt/
+          echo ""
+          echo "=== Arquivos HTML em html_pt ==="
+          find blog/_build/html_pt -name "*.html" -type f
 
-      - name: Translate to English
+      - name:  Translate to English
         run: |
           python scripts/translate_blog.py
 
-      - name: Prepare Pages
+      - name:  Prepare Pages
         run: |
-          mkdir -p _site
+          mkdir -p _site/blog
           
           # Copia o site principal
           cp index.html _site/
           cp foto.jpg _site/ 2>/dev/null || true
           
-          # IMPORTANTE: Copia o arquivo CNAME para manter o domínio personalizado
+          # Copia CNAME
           cp CNAME _site/ 2>/dev/null || true
           
-          # Copia o blog em português
-          cp -r blog/_build/html_pt _site/blog
-          echo "✓ Blog PT copiado"
+          # Copia o blog em português (conteúdo direto, não a pasta)
+          if [ -d "blog/_build/html_pt" ] && [ "$(ls -A blog/_build/html_pt 2>/dev/null)" ]; then
+            cp -r blog/_build/html_pt/* _site/blog/
+            echo "✓ Blog PT copiado"
+          else
+            echo "✗ ERRO: html_pt está vazio ou não existe!"
+            ls -la blog/_build/
+            exit 1
+          fi
           
           # Copia o blog em inglês
-          if [ -d "blog/_build/html_en" ]; then
-            cp -r blog/_build/html_en _site/blog/en
+          if [ -d "blog/_build/html_en" ] && [ "$(ls -A blog/_build/html_en 2>/dev/null)" ]; then
+            mkdir -p _site/blog/en
+            cp -r blog/_build/html_en/* _site/blog/en/
             echo "✓ Blog EN copiado"
           fi
           
           echo ""
-          echo "=== Estrutura final ==="
-          find _site -type f -name "*.html" | head -20
+          echo "=== Estrutura final de _site ==="
+          find _site -name "*.html" -type f
           echo ""
           echo "=== Verificando CNAME ==="
           cat _site/CNAME 2>/dev/null || echo "CNAME não encontrado"
@@ -95,10 +121,10 @@ jobs:
   deploy:
     environment: 
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment. outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
-    steps:
+    steps: 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
