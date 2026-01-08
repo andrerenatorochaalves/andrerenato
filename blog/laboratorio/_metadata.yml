@@ -1,8 +1,0 @@
-# Metadados aplicados a todos os arquivos desta pasta
-execute:
-  echo: true
-  warning: false
-
-format:
-  html: 
-    code-fold: show
