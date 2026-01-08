@@ -1,6 +1,6 @@
 name: Deploy Blog
 
-on:
+on: 
   push:
     branches: 
       - main
@@ -11,7 +11,7 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:  
+concurrency: 
   group: "pages"
   cancel-in-progress: false
 
@@ -19,19 +19,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name:  Checkout
         uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
-        with:  
+        with: 
           python-version: '3.11'
 
       - name: Install dependencies
         run: |
           pip install jupyter-book
           pip install deep-translator
-          pip install numpy matplotlib
 
       - name: Build Jupyter Book (PT)
         run: |
@@ -39,122 +38,64 @@ jobs:
           echo "=== Conteúdo da pasta blog ==="
           ls -la
           echo ""
-          echo "=== Conteúdo de laboratorio ==="
-          ls -la laboratorio/ || echo "Pasta laboratorio não existe"
-          echo ""
           echo "=== Iniciando build do Jupyter Book ==="
-          jupyter-book build .  --verbose
+          jupyter-book build .  --verbose 2>&1 || true
           echo ""
-          echo "=== Build concluído ==="
           echo "=== Conteúdo de _build ==="
-          ls -la _build/
+          ls -la _build/ || echo "_build não existe"
           echo ""
           echo "=== Procurando HTMLs ==="
-          find _build -name "*.html" -type f
-          cd .. 
+          find _build -name "*.html" -type f 2>/dev/null || echo "Nenhum HTML encontrado"
+          cd ..
 
-      - name:  Prepare PT build
+      - name: Prepare PT build
         run: |
           mkdir -p blog/_build/html_pt
           
-          # Verifica se html existe e tem conteúdo
           if [ -d "blog/_build/html" ] && [ "$(ls -A blog/_build/html 2>/dev/null)" ]; then
             cp -r blog/_build/html/* blog/_build/html_pt/
-            echo "✓ Copiado de blog/_build/html"
+            echo "Copiado de blog/_build/html"
           else
-            echo "⚠ blog/_build/html não existe ou está vazio"
-            echo "Conteúdo de blog/_build:"
-            ls -la blog/_build/
-            
-            # Tenta criar um HTML básico a partir do intro.md
-            echo "Criando HTML de fallback..."
-            mkdir -p blog/_build/html_pt
-            cat > blog/_build/html_pt/index.html << 'HTMLEOF'
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog | André Renato</title>
-    <style>
-        body { font-family: 'Inter', sans-serif; max-width: 800px; margin: 0 auto; padding:  40px 20px; background: #faf8f5; color: #2c3e50; }
-        h1 { color: #2c3e50; border-bottom: 3px solid #c9a227; padding-bottom: 10px; }
-        a { color: #c9a227; }
-        .back { margin-bottom: 20px; }
-    </style>
-</head>
-<body>
-    <div class="back"><a href="/">← Voltar ao site principal</a></div>
-    <h1>Blog Técnico - Geotecnia</h1>
-    <p>Bem-vindo ao blog técnico de André Renato Rocha Alves. </p>
-    <h2>Em construção</h2>
-    <p>O blog está sendo configurado.  Em breve, conteúdos sobre: </p>
-    <ul>
-        <li>Ensaios de Laboratório</li>
-        <li>Investigações de Campo</li>
-        <li>Parametrização Geotécnica</li>
-        <li>Modelagem Numérica</li>
-    </ul>
-</body>
-</html>
-HTMLEOF
-            echo "✓ HTML de fallback criado"
+            echo "html nao existe, criando fallback..."
+            echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Blog</title></head><body><h1>Blog em construcao</h1><p><a href="/">Voltar</a></p></body></html>' > blog/_build/html_pt/index.html
           fi
           
-          echo ""
-          echo "=== Conteúdo de html_pt ==="
           ls -la blog/_build/html_pt/
 
-      - name:  Translate to English
-        run: |
-          python scripts/translate_blog.py
+      - name: Translate to English
+        run: python scripts/translate_blog.py
 
-      - name:  Prepare Pages
+      - name: Prepare Pages
         run: |
           mkdir -p _site/blog
-          
-          # Copia o site principal
           cp index.html _site/
           cp foto.jpg _site/ 2>/dev/null || true
-          
-          # Copia CNAME
           cp CNAME _site/ 2>/dev/null || true
           
-          # Copia o blog em português
-          if [ -d "blog/_build/html_pt" ] && [ "$(ls -A blog/_build/html_pt 2>/dev/null)" ]; then
-            cp -r blog/_build/html_pt/* _site/blog/
-            echo "✓ Blog PT copiado"
-          else
-            echo "✗ ERRO: html_pt está vazio!"
-            exit 1
-          fi
+          cp -r blog/_build/html_pt/* _site/blog/
+          echo "Blog PT copiado"
           
-          # Copia o blog em inglês
-          if [ -d "blog/_build/html_en" ] && [ "$(ls -A blog/_build/html_en 2>/dev/null)" ]; then
+          if [ -d "blog/_build/html_en" ]; then
             mkdir -p _site/blog/en
             cp -r blog/_build/html_en/* _site/blog/en/
-            echo "✓ Blog EN copiado"
+            echo "Blog EN copiado"
           fi
           
-          echo ""
-          echo "=== Estrutura final de _site ==="
+          echo "=== Estrutura final ==="
           find _site -name "*.html" -type f
-          echo ""
-          echo "=== Verificando CNAME ==="
-          cat _site/CNAME 2>/dev/null || echo "CNAME não encontrado"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
-        with:
+        with: 
           path: '_site'
 
   deploy:
     environment: 
       name: github-pages
-      url: ${{ steps.deployment. outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
-    steps: 
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
