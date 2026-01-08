@@ -4,10 +4,6 @@ on:
   push:
     branches: 
       - main
-    paths:
-      - 'blog/**'
-      - '.github/workflows/deploy-blog.yml'
-      - 'scripts/**'
   workflow_dispatch:
 
 permissions:
@@ -15,7 +11,7 @@ permissions:
   pages: write
   id-token: write
 
-concurrency: 
+concurrency:  
   group: "pages"
   cancel-in-progress: false
 
@@ -23,12 +19,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name:  Checkout
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
-        with: 
+        with:  
           python-version: '3.11'
 
       - name: Install dependencies
@@ -42,22 +38,10 @@ jobs:
           jupyter-book build . 
           cd .. 
 
-      - name: Debug - Full structure
-        run: |
-          echo "=== Estrutura completa de blog/_build ==="
-          find blog/_build -type f 2>/dev/null | head -50 || echo "Nada encontrado"
-          echo ""
-          echo "=== Procurando index.html ==="
-          find blog/_build -name "index.html" -type f 2>/dev/null || echo "Nenhum index.html"
-          echo ""
-          echo "=== Listando blog/_build ==="
-          ls -laR blog/_build/ 2>/dev/null | head -100 || echo "blog/_build não existe"
-
       - name:  Prepare PT build
         run: |
           mkdir -p blog/_build/html_pt
           
-          # Tenta copiar de diferentes locais possíveis
           if [ -d "blog/_build/html" ] && [ "$(ls -A blog/_build/html 2>/dev/null)" ]; then
             cp -r blog/_build/html/* blog/_build/html_pt/
             echo "✓ Copiado de blog/_build/html"
@@ -70,10 +54,6 @@ jobs:
             cp -r blog/_build/* blog/_build/html_pt/ 2>/dev/null || true
             rm -rf blog/_build/html_pt/html_pt 2>/dev/null || true
           fi
-          
-          echo ""
-          echo "=== Conteúdo de html_pt ==="
-          ls -la blog/_build/html_pt/ | head -20
 
       - name: Translate to English
         run: |
@@ -87,6 +67,9 @@ jobs:
           cp index.html _site/
           cp foto.jpg _site/ 2>/dev/null || true
           
+          # IMPORTANTE: Copia o arquivo CNAME para manter o domínio personalizado
+          cp CNAME _site/ 2>/dev/null || true
+          
           # Copia o blog em português
           cp -r blog/_build/html_pt _site/blog
           echo "✓ Blog PT copiado"
@@ -99,7 +82,10 @@ jobs:
           
           echo ""
           echo "=== Estrutura final ==="
-          find _site -type f -name "*.html"
+          find _site -type f -name "*.html" | head -20
+          echo ""
+          echo "=== Verificando CNAME ==="
+          cat _site/CNAME 2>/dev/null || echo "CNAME não encontrado"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -107,9 +93,9 @@ jobs:
           path: '_site'
 
   deploy:
-    environment:  
+    environment: 
       name: github-pages
-      url: ${{ steps. deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
     steps:
