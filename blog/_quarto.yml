@@ -1,0 +1,58 @@
+project: 
+  type: website
+  output-dir: _site
+
+website:
+  title:  "Blog | André Renato Rocha Alves"
+  description: "Geotecnia"
+  site-url: https://andrerenato.com/blog
+  
+  navbar:
+    background: primary
+    left: 
+      - href:  index.qmd
+        text:  Início
+      - href: laboratorio/index.qmd
+        text:  Ensaios de Laboratório
+    right:
+      - icon: house
+        href: https://andrerenato.com
+        text: Site Principal
+      - icon: linkedin
+        href: https://www.linkedin.com/in/andr%C3%A9-renato-rocha-alves-03b647124/
+      - icon: envelope
+        href: mailto:contato@andrerenato.com
+
+  page-footer:
+    center:  |
+      © 2026 André Renato Rocha Alves | 
+      [← Voltar ao site principal](https://andrerenato.com)
+
+  # Seletor de idiomas (aparece automaticamente!)
+  page-navigation:  true
+
+format:
+  html: 
+    theme: 
+      light: flatly
+      dark:  darkly
+    lang: pt
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+    highlight-style: github
+
+execute:
+  freeze:  auto  # Cache dos notebooks
+  echo: true
+
+# Extensões para matemática
+filters:
+  - latex-environment
+
+# Metadados do autor
+author:
+  name: André Renato Rocha Alves
+  email: contato@andrerenato.com
+  url: https://andrerenato.com
