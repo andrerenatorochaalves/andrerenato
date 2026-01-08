@@ -28,7 +28,7 @@ jobs:
 
       - name: Setup Python
         uses: actions/setup-python@v5
-        with:
+        with: 
           python-version: '3.11'
 
       - name: Install dependencies
@@ -45,24 +45,45 @@ jobs:
       - name: Debug - List build directory
         run: |
           echo "=== Listando blog/_build ==="
-          ls -la blog/_build/ || echo "blog/_build não existe"
-          echo "=== Listando blog/_build/html ==="
-          ls -la blog/_build/html/ || echo "blog/_build/html não existe"
+          find blog/_build -type f -name "*.html" | head -20 || echo "Nenhum HTML encontrado em blog/_build"
+          echo ""
+          echo "=== Estrutura completa ==="
+          ls -laR blog/_build/ | head -50 || echo "blog/_build não existe"
 
       - name:  Translate to English
         run: |
           python scripts/translate_blog.py
 
-      - name:  Prepare Pages
+      - name: Prepare Pages
         run: |
           mkdir -p _site
-          # Copia o site principal (index.html, foto.jpg, etc.)
+          
+          # Copia o site principal
           cp index.html _site/
           cp foto.jpg _site/ 2>/dev/null || true
-          # Copia o blog em português
-          cp -r blog/_build/html _site/blog
+          
+          # Encontra e copia o blog em português
+          if [ -d "blog/_build/html" ]; then
+            echo "Copiando de blog/_build/html"
+            cp -r blog/_build/html _site/blog
+          elif [ -d "blog/_build/_page" ]; then
+            echo "Copiando de blog/_build/_page"
+            mkdir -p _site/blog
+            cp -r blog/_build/_page/* _site/blog/
+          else
+            echo "ERRO:  Diretório de build não encontrado"
+            echo "Conteúdo de blog/_build:"
+            ls -la blog/_build/ || echo "blog/_build não existe"
+            exit 1
+          fi
+          
           # Copia o blog em inglês
-          cp -r blog/_build/html_en _site/blog/en 2>/dev/null || true
+          if [ -d "blog/_build/html_en" ]; then
+            cp -r blog/_build/html_en _site/blog/en
+          fi
+          
+          echo "=== Conteúdo final de _site ==="
+          ls -laR _site/ | head -30
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
