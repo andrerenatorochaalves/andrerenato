@@ -1,8 +1,22 @@
-# Metadados aplicados a todos os arquivos desta pasta
-execute:
-  echo: true
-  warning: false
+---
+title: "Ensaios de Laboratório"
+---
 
-format:
-  html: 
-    code-fold: show
+Nesta seção, abordo os principais ensaios de laboratório utilizados em geotecnia de mineração. 
+
+---
+
+## Importância
+
+Os ensaios de laboratório são fundamentais para:
+
+1. Caracterizar os materiais geotécnicos
+2. Obter parâmetros para análises numéricas
+3. Avaliar comportamento sob diferentes condições de carregamento
+4. Verificar suscetibilidade à liquefação
+
+---
+
+## Conteúdos
+
+- [Ensaios de Caracterização](caracterizacao.ipynb) - Granulometria e Limites de Atterberg
