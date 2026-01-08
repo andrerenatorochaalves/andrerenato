@@ -36,74 +36,43 @@ jobs:
       - name: Build Jupyter Book (PT)
         run: |
           cd blog
-          echo "=== Conteúdo da pasta blog ==="
-          ls -la
-          echo ""
-          echo "=== Conteúdo de laboratorio ==="
-          ls -la laboratorio/ || echo "Pasta laboratorio não existe"
-          echo ""
-          echo "=== Iniciando build do Jupyter Book ==="
-          jupyter-book build .  --verbose
-          echo ""
-          echo "=== Build concluído ==="
-          echo "=== Conteúdo de _build ==="
-          ls -la _build/
-          echo ""
-          echo "=== Procurando HTMLs ==="
-          find _build -name "*.html" -type f
+          jupyter-book build . 
           cd .. 
+
+      - name: Debug - Show build output
+        run: |
+          echo "=== Conteúdo de blog/_build ==="
+          ls -la blog/_build/
+          echo ""
+          echo "=== Procurando index.html ==="
+          find blog/_build -name "index.html" -type f
 
       - name:  Prepare PT build
         run: |
           mkdir -p blog/_build/html_pt
           
-          # Verifica se html existe e tem conteúdo
+          # Copia de blog/_build/html se existir
           if [ -d "blog/_build/html" ] && [ "$(ls -A blog/_build/html 2>/dev/null)" ]; then
             cp -r blog/_build/html/* blog/_build/html_pt/
             echo "✓ Copiado de blog/_build/html"
+          # Senão, copia tudo de blog/_build (exceto pastas de saída)
           else
-            echo "⚠ blog/_build/html não existe ou está vazio"
-            echo "Conteúdo de blog/_build:"
-            ls -la blog/_build/
-            
-            # Tenta criar um HTML básico a partir do intro.md
-            echo "Criando HTML de fallback..."
-            mkdir -p blog/_build/html_pt
-            cat > blog/_build/html_pt/index.html << 'HTMLEOF'
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog | André Renato</title>
-    <style>
-        body { font-family: 'Inter', sans-serif; max-width: 800px; margin: 0 auto; padding:  40px 20px; background: #faf8f5; color: #2c3e50; }
-        h1 { color: #2c3e50; border-bottom: 3px solid #c9a227; padding-bottom: 10px; }
-        a { color: #c9a227; }
-        .back { margin-bottom: 20px; }
-    </style>
-</head>
-<body>
-    <div class="back"><a href="/">← Voltar ao site principal</a></div>
-    <h1>Blog Técnico - Geotecnia</h1>
-    <p>Bem-vindo ao blog técnico de André Renato Rocha Alves. </p>
-    <h2>Em construção</h2>
-    <p>O blog está sendo configurado.  Em breve, conteúdos sobre: </p>
-    <ul>
-        <li>Ensaios de Laboratório</li>
-        <li>Investigações de Campo</li>
-        <li>Parametrização Geotécnica</li>
-        <li>Modelagem Numérica</li>
-    </ul>
-</body>
-</html>
-HTMLEOF
-            echo "✓ HTML de fallback criado"
+            echo "html não encontrado, copiando de _build root..."
+            for item in blog/_build/*; do
+              basename=$(basename "$item")
+              if [ "$basename" != "html_pt" ] && [ "$basename" != "html_en" ] && [ "$basename" != ". doctrees" ]; then
+                cp -r "$item" blog/_build/html_pt/ 2>/dev/null || true
+              fi
+            done
+            echo "✓ Copiado de blog/_build (root)"
           fi
           
           echo ""
           echo "=== Conteúdo de html_pt ==="
           ls -la blog/_build/html_pt/
+          echo ""
+          echo "=== Arquivos HTML em html_pt ==="
+          find blog/_build/html_pt -name "*.html" -type f
 
       - name:  Translate to English
         run: |
@@ -120,12 +89,13 @@ HTMLEOF
           # Copia CNAME
           cp CNAME _site/ 2>/dev/null || true
           
-          # Copia o blog em português
+          # Copia o blog em português (conteúdo direto, não a pasta)
           if [ -d "blog/_build/html_pt" ] && [ "$(ls -A blog/_build/html_pt 2>/dev/null)" ]; then
             cp -r blog/_build/html_pt/* _site/blog/
             echo "✓ Blog PT copiado"
           else
-            echo "✗ ERRO: html_pt está vazio!"
+            echo "✗ ERRO: html_pt está vazio ou não existe!"
+            ls -la blog/_build/
             exit 1
           fi
           
