@@ -23,7 +23,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name:  Checkout
         uses: actions/checkout@v4
 
       - name: Setup Python
@@ -41,16 +41,34 @@ jobs:
           cd blog
           jupyter-book build . 
           cd .. 
+          
+          echo "=== Conteúdo de blog/_build após o build ==="
+          ls -la blog/_build/
 
-      - name: Debug - List build directory
+      - name: Save PT build location
         run: |
-          echo "=== Listando blog/_build ==="
-          find blog/_build -type f -name "*.html" | head -20 || echo "Nenhum HTML encontrado em blog/_build"
-          echo ""
-          echo "=== Estrutura completa ==="
-          ls -laR blog/_build/ | head -50 || echo "blog/_build não existe"
+          # Encontra onde o HTML foi gerado
+          if [ -d "blog/_build/html" ]; then
+            echo "HTML_DIR=blog/_build/html" >> $GITHUB_ENV
+          elif [ -d "blog/_build/_page" ]; then
+            echo "HTML_DIR=blog/_build/_page" >> $GITHUB_ENV
+          else
+            echo "Procurando arquivos HTML..."
+            HTML_PATH=$(find blog/_build -name "index.html" -type f | head -1 | xargs dirname)
+            echo "HTML_DIR=$HTML_PATH" >> $GITHUB_ENV
+          fi
 
-      - name:  Translate to English
+      - name: Debug - Show HTML location
+        run: |
+          echo "HTML gerado em: $HTML_DIR"
+          ls -la $HTML_DIR/ || echo "Diretório não encontrado"
+
+      - name: Copy PT build for preservation
+        run: |
+          # Copia o build PT para um local seguro antes da tradução
+          cp -r $HTML_DIR blog/_build/html_pt
+
+      - name: Translate to English
         run: |
           python scripts/translate_blog.py
 
@@ -62,28 +80,26 @@ jobs:
           cp index.html _site/
           cp foto.jpg _site/ 2>/dev/null || true
           
-          # Encontra e copia o blog em português
-          if [ -d "blog/_build/html" ]; then
-            echo "Copiando de blog/_build/html"
-            cp -r blog/_build/html _site/blog
-          elif [ -d "blog/_build/_page" ]; then
-            echo "Copiando de blog/_build/_page"
-            mkdir -p _site/blog
-            cp -r blog/_build/_page/* _site/blog/
+          # Copia o blog em português
+          if [ -d "blog/_build/html_pt" ]; then
+            cp -r blog/_build/html_pt _site/blog
+            echo "✓ Blog PT copiado de html_pt"
           else
-            echo "ERRO:  Diretório de build não encontrado"
-            echo "Conteúdo de blog/_build:"
-            ls -la blog/_build/ || echo "blog/_build não existe"
+            echo "✗ ERRO: html_pt não encontrado"
             exit 1
           fi
           
           # Copia o blog em inglês
           if [ -d "blog/_build/html_en" ]; then
             cp -r blog/_build/html_en _site/blog/en
+            echo "✓ Blog EN copiado de html_en"
+          else
+            echo "⚠ html_en não encontrado, pulando versão em inglês"
           fi
           
-          echo "=== Conteúdo final de _site ==="
-          ls -laR _site/ | head -30
+          echo ""
+          echo "=== Estrutura final de _site ==="
+          find _site -type f -name "*.html" | head -20
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -91,9 +107,9 @@ jobs:
           path: '_site'
 
   deploy:
-    environment: 
+    environment:  
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps. deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
     steps:
