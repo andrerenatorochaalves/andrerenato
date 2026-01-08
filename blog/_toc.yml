@@ -4,21 +4,35 @@ format: jb-book
 
 root:  intro
 
-parts: 
-  - caption:  Ensaios de Laboratório
+parts:
+  - caption: Ensaios de Laboratório
     chapters: 
-      - file: Ensaios de laboratório
+      - file: ensaios de laboratorio
         sections:
-          - file: Interpretação de ensaios triaxiais
+          - file: caracterizacao
+          # - file: laboratorio/adensamento
+          # - file: laboratorio/triaxiais
 
-  - caption:  Aplicações em Excel, Power Query e Power BI
-    chapters:
-      - file: Aplicações em Excel, Power Query e Power BI
-        sections:
-          - file: Planilha de inventário
+  # - caption: Investigações de Campo
+  #   chapters:
+  #     - file: campo/intro
+  #       sections:
+  #         - file: campo/spt-cptu
+  #         - file: campo/piezometros
+  #         - file: campo/instrumentacao
 
-  - caption: Liquefação
-    chapters: 
-      - file: Liquefação
-        sections:
-          - file: Introdução a liquefação estática
+  # - caption: Parametrização Geotécnica
+  #   chapters:
+  #     - file: parametrizacao/intro
+  #       sections: 
+  #         - file: parametrizacao/resistencia
+  #         - file: parametrizacao/modelos-constitutivos
+  #         - file: parametrizacao/modelos-hidraulicos
+
+  # - caption:  Modelagem Numérica
+  #   chapters:
+  #     - file: modelagem/intro
+  #       sections: 
+  #         - file: modelagem/equilibrio-limite
+  #         - file: modelagem/elementos-finitos
+  #         - file: modelagem/calibracao
