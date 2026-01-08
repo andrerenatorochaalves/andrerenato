@@ -41,32 +41,39 @@ jobs:
           cd blog
           jupyter-book build . 
           cd .. 
+
+      - name: Debug - Full structure
+        run: |
+          echo "=== Estrutura completa de blog/_build ==="
+          find blog/_build -type f 2>/dev/null | head -50 || echo "Nada encontrado"
+          echo ""
+          echo "=== Procurando index.html ==="
+          find blog/_build -name "index.html" -type f 2>/dev/null || echo "Nenhum index.html"
+          echo ""
+          echo "=== Listando blog/_build ==="
+          ls -laR blog/_build/ 2>/dev/null | head -100 || echo "blog/_build não existe"
+
+      - name:  Prepare PT build
+        run: |
+          mkdir -p blog/_build/html_pt
           
-          echo "=== Conteúdo de blog/_build após o build ==="
-          ls -la blog/_build/
-
-      - name: Save PT build location
-        run: |
-          # Encontra onde o HTML foi gerado
-          if [ -d "blog/_build/html" ]; then
-            echo "HTML_DIR=blog/_build/html" >> $GITHUB_ENV
-          elif [ -d "blog/_build/_page" ]; then
-            echo "HTML_DIR=blog/_build/_page" >> $GITHUB_ENV
+          # Tenta copiar de diferentes locais possíveis
+          if [ -d "blog/_build/html" ] && [ "$(ls -A blog/_build/html 2>/dev/null)" ]; then
+            cp -r blog/_build/html/* blog/_build/html_pt/
+            echo "✓ Copiado de blog/_build/html"
+          elif [ -f "blog/_build/index.html" ]; then
+            cp -r blog/_build/* blog/_build/html_pt/ 2>/dev/null || true
+            rm -rf blog/_build/html_pt/html_pt 2>/dev/null || true
+            echo "✓ Copiado de blog/_build (root)"
           else
-            echo "Procurando arquivos HTML..."
-            HTML_PATH=$(find blog/_build -name "index.html" -type f | head -1 | xargs dirname)
-            echo "HTML_DIR=$HTML_PATH" >> $GITHUB_ENV
+            echo "⚠ Estrutura não reconhecida, copiando tudo"
+            cp -r blog/_build/* blog/_build/html_pt/ 2>/dev/null || true
+            rm -rf blog/_build/html_pt/html_pt 2>/dev/null || true
           fi
-
-      - name: Debug - Show HTML location
-        run: |
-          echo "HTML gerado em: $HTML_DIR"
-          ls -la $HTML_DIR/ || echo "Diretório não encontrado"
-
-      - name: Copy PT build for preservation
-        run: |
-          # Copia o build PT para um local seguro antes da tradução
-          cp -r $HTML_DIR blog/_build/html_pt
+          
+          echo ""
+          echo "=== Conteúdo de html_pt ==="
+          ls -la blog/_build/html_pt/ | head -20
 
       - name: Translate to English
         run: |
@@ -81,25 +88,18 @@ jobs:
           cp foto.jpg _site/ 2>/dev/null || true
           
           # Copia o blog em português
-          if [ -d "blog/_build/html_pt" ]; then
-            cp -r blog/_build/html_pt _site/blog
-            echo "✓ Blog PT copiado de html_pt"
-          else
-            echo "✗ ERRO: html_pt não encontrado"
-            exit 1
-          fi
+          cp -r blog/_build/html_pt _site/blog
+          echo "✓ Blog PT copiado"
           
           # Copia o blog em inglês
           if [ -d "blog/_build/html_en" ]; then
             cp -r blog/_build/html_en _site/blog/en
-            echo "✓ Blog EN copiado de html_en"
-          else
-            echo "⚠ html_en não encontrado, pulando versão em inglês"
+            echo "✓ Blog EN copiado"
           fi
           
           echo ""
-          echo "=== Estrutura final de _site ==="
-          find _site -type f -name "*.html" | head -20
+          echo "=== Estrutura final ==="
+          find _site -type f -name "*.html"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
