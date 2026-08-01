@@ -6,6 +6,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
+import matplotlib.pyplot as plt
 import pandas as pd
 
 
@@ -95,6 +96,9 @@ class NorSandInput:
     output_dir: str = "outputs"
     history_filename: str = "triax_history.parquet"
     summary_filename: str = "triax_summary.parquet"
+    make_plots: bool = True
+    plots_filename: str = "triaxial_plots.png"
+    figure_dpi: int = 180
 
 
 INPUTS = NorSandInput()
@@ -140,6 +144,7 @@ class ModelState:
     Gmax: float
     Kmax: float
     Ktot: float
+    pore_pressure: float
     depGp: float
     depVp: float
     depGe: float
@@ -176,6 +181,7 @@ def clamp(value: float, lower: float, upper: float) -> float:
 
 
 def e_crit(sigM: float, cfg: NorSandInput, lode_angle: float = DEGREE_30) -> float:
+    del lode_angle
     sigM = max(sigM, SIGM_FLOOR)
     if cfg.csl_mode == CSLMode.CURVED:
         e_txl = cfg.csl_a - cfg.csl_b * (sigM / PREF) ** cfg.csl_c
@@ -292,6 +298,7 @@ def _record_state(
     sample_ht: float,
     p: float,
     q: float,
+    p0: float,
     e: float,
     psi: float,
     eta: float,
@@ -320,6 +327,7 @@ def _record_state(
 
     sig1 = p + 2.0 * q / 3.0
     sig3 = p - q / 3.0
+    pore_pressure = p0 - p
 
     history.append(
         ModelState(
@@ -344,6 +352,7 @@ def _record_state(
             Gmax=Gmax,
             Kmax=Kmax,
             Ktot=Ktot,
+            pore_pressure=pore_pressure,
             depGp=depGp,
             depVp=depVp,
             depGe=depGe,
@@ -442,6 +451,7 @@ def run_triaxial_simulation(cfg: NorSandInput) -> SimulationResult:
         sample_ht=sample_ht,
         p=sigM,
         q=sigQ,
+        p0=cfg.p0,
         e=e,
         psi=psi,
         eta=eta,
@@ -522,6 +532,7 @@ def run_triaxial_simulation(cfg: NorSandInput) -> SimulationResult:
             sample_ht=sample_ht,
             p=sigM,
             q=sigQ,
+            p0=cfg.p0,
             e=e,
             psi=psi,
             eta=eta,
@@ -543,7 +554,6 @@ def run_triaxial_simulation(cfg: NorSandInput) -> SimulationResult:
         j_plastic = 3
 
     depGp_base = cfg.max_strain_txl / max(cfg.num_points_txl - 1, 1)
-    last_j = j_plastic - 1
 
     for j in range(j_plastic, cfg.num_points_txl + 1):
         sigQ_old = sigQ
@@ -555,7 +565,6 @@ def run_triaxial_simulation(cfg: NorSandInput) -> SimulationResult:
             bulk_pore_fluid = WATER_BULK
 
         if cfg.compute_unreload and history[-1].eps1 > cfg.strain_at_unload:
-            last_j = j - 1
             break
 
         Gmax = g_max(e, sigM, cfg)
@@ -653,6 +662,7 @@ def run_triaxial_simulation(cfg: NorSandInput) -> SimulationResult:
             sample_ht=sample_ht,
             p=sigM,
             q=sigQ,
+            p0=cfg.p0,
             e=e,
             psi=psi,
             eta=eta,
@@ -671,9 +681,6 @@ def run_triaxial_simulation(cfg: NorSandInput) -> SimulationResult:
             depG=depG,
             depV=depV,
         )
-        last_j = j
-    else:
-        last_j = cfg.num_points_txl
 
     diagnostics.completed_steps = len(history)
 
@@ -692,11 +699,78 @@ def export_results(result: SimulationResult, cfg: NorSandInput) -> None:
     result.summary.to_parquet(output_dir / cfg.summary_filename, index=False)
 
 
+def make_plots(result: SimulationResult, cfg: NorSandInput) -> Path:
+    history = result.history
+    output_dir = Path(cfg.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    plot_path = output_dir / cfg.plots_filename
+
+    fig, axes = plt.subplots(3, 2, figsize=(13, 14), dpi=cfg.figure_dpi)
+    axes = axes.flatten()
+
+    # 1. Axial strain vs deviatoric stress
+    axes[0].plot(history["eps1"], history["q"], color="tab:red", lw=1.8)
+    axes[0].set_xlabel("Axial strain (%)")
+    axes[0].set_ylabel("Deviatoric stress q (kPa)")
+    axes[0].set_title("Axial strain vs deviatoric stress")
+    axes[0].grid(True, alpha=0.3)
+
+    # 2. Mean effective stress vs deviatoric stress
+    axes[1].plot(history["p"], history["q"], color="tab:blue", lw=1.8)
+    axes[1].set_xlabel("Mean effective stress p' (kPa)")
+    axes[1].set_ylabel("Deviatoric stress q (kPa)")
+    axes[1].set_title("p' vs q")
+    axes[1].grid(True, alpha=0.3)
+
+    # 3. Axial strain vs volumetric strain or pore pressure
+    if cfg.drainage == DrainageMode.DRAINED and not cfg.compute_instability:
+        axes[2].plot(history["eps1"], history["epsV"], color="tab:green", lw=1.8)
+        axes[2].set_ylabel("Volumetric strain (%)")
+        axes[2].set_title("Axial strain vs volumetric strain")
+    else:
+        axes[2].plot(history["eps1"], history["pore_pressure"], color="tab:purple", lw=1.8)
+        axes[2].set_ylabel("Pore pressure u (kPa)")
+        axes[2].set_title("Axial strain vs pore pressure")
+    axes[2].set_xlabel("Axial strain (%)")
+    axes[2].grid(True, alpha=0.3)
+
+    # 4. Mean effective stress vs void ratio
+    axes[3].plot(history["p"], history["e"], color="tab:orange", lw=1.8)
+    axes[3].set_xlabel("Mean effective stress p' (kPa)")
+    axes[3].set_ylabel("Void ratio e")
+    axes[3].set_title("p' vs void ratio")
+    axes[3].grid(True, alpha=0.3)
+
+    # 5. Axial strain vs psi
+    axes[4].plot(history["eps1"], history["psi"], color="tab:brown", lw=1.8)
+    axes[4].set_xlabel("Axial strain (%)")
+    axes[4].set_ylabel("State parameter psi")
+    axes[4].set_title("Axial strain vs psi")
+    axes[4].grid(True, alpha=0.3)
+
+    # 6. Axial strain vs dilatancy
+    axes[5].plot(history["eps1"], history["Dp"], color="tab:cyan", lw=1.8)
+    axes[5].set_xlabel("Axial strain (%)")
+    axes[5].set_ylabel("Dilatancy Dp")
+    axes[5].set_title("Axial strain vs dilatancy")
+    axes[5].grid(True, alpha=0.3)
+
+    fig.tight_layout()
+    fig.savefig(plot_path, bbox_inches="tight")
+    plt.close(fig)
+
+    return plot_path
+
+
 def main() -> None:
     result = run_triaxial_simulation(INPUTS)
     export_results(result, INPUTS)
     print(f"History written to {Path(INPUTS.output_dir) / INPUTS.history_filename}")
     print(f"Summary written to {Path(INPUTS.output_dir) / INPUTS.summary_filename}")
+
+    if INPUTS.make_plots:
+        plot_path = make_plots(result, INPUTS)
+        print(f"Plots written to {plot_path}")
 
 
 if __name__ == "__main__":
